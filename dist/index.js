@@ -2194,25 +2194,25 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const ac = __importStar(__webpack_require__(470));
-const atc = __importStar(__webpack_require__(533));
-const ag = __importStar(__webpack_require__(281));
-const path_1 = __webpack_require__(622);
+const core = __importStar(__webpack_require__(470));
+const tool = __importStar(__webpack_require__(533));
+const glob = __importStar(__webpack_require__(281));
+const path = __importStar(__webpack_require__(622));
 function extract(url) {
     if (url.endsWith('.tar.gz') || url.endsWith('.tgz')) {
-        return atc.extractTar;
+        return tool.extractTar;
     }
     else if (url.endsWith('.zip')) {
-        return atc.extractZip;
+        return tool.extractZip;
     }
     else {
-        return atc.extract7z;
+        return tool.extract7z;
     }
 }
 function findFirst(expression) {
     return (folder) => __awaiter(this, void 0, void 0, function* () {
-        return ag
-            .create(path_1.join(folder, expression))
+        return glob
+            .create(path.join(folder, expression))
             .then((globber) => __awaiter(this, void 0, void 0, function* () { return globber.glob(); }))
             .then(found => found[0]);
     });
@@ -2220,17 +2220,17 @@ function findFirst(expression) {
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const url = ac.getInput('toolUrl', { required: true });
-            const expression = ac.getInput('archiveGlob');
-            yield atc
+            const url = core.getInput('toolUrl', { required: true });
+            const expression = core.getInput('archiveGlob');
+            yield tool
                 .downloadTool(url)
                 .then(extract(url))
                 .then(findFirst(expression))
-                .then(ac.addPath)
-                .catch(ac.setFailed);
+                .then(core.addPath)
+                .catch(core.setFailed);
         }
         catch (error) {
-            ac.setFailed(error.message);
+            core.setFailed(error.message);
         }
     });
 }

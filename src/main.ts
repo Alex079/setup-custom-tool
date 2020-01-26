@@ -1,38 +1,38 @@
-import * as ac from '@actions/core'
-import * as atc from '@actions/tool-cache'
-import * as ag from '@actions/glob'
-import {join} from 'path'
+import * as core from '@actions/core'
+import * as tool from '@actions/tool-cache'
+import * as glob from '@actions/glob'
+import * as path from 'path'
 
 function extract(url: string): (file: string) => Promise<string> {
   if (url.endsWith('.tar.gz') || url.endsWith('.tgz')) {
-    return atc.extractTar
+    return tool.extractTar
   } else if (url.endsWith('.zip')) {
-    return atc.extractZip
+    return tool.extractZip
   } else {
-    return atc.extract7z
+    return tool.extract7z
   }
 }
 
 function findFirst(expression: string): (folder: string) => Promise<string> {
   return async (folder: string) =>
-    ag
-      .create(join(folder, expression))
+    glob
+      .create(path.join(folder, expression))
       .then(async globber => globber.glob())
       .then(found => found[0])
 }
 
 async function run(): Promise<void> {
   try {
-    const url = ac.getInput('toolUrl', {required: true})
-    const expression = ac.getInput('archiveGlob')
-    await atc
+    const url = core.getInput('toolUrl', {required: true})
+    const expression = core.getInput('archiveGlob')
+    await tool
       .downloadTool(url)
       .then(extract(url))
       .then(findFirst(expression))
-      .then(ac.addPath)
-      .catch(ac.setFailed)
+      .then(core.addPath)
+      .catch(core.setFailed)
   } catch (error) {
-    ac.setFailed(error.message)
+    core.setFailed(error.message)
   }
 }
 
