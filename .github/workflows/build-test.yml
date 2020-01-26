@@ -27,5 +27,5 @@ jobs:
       - uses: actions/checkout@v1
       - uses: ./
         with: 
-          toolUrl: https://file-examples.com/wp-content/uploads/2017/02/zip_2MB.zip
-          archiveGlob: *
+          toolUrl: 'https://file-examples.com/wp-content/uploads/2017/02/zip_2MB.zip'
+          archiveGlob: '*'
