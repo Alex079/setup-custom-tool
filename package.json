@@ -1,8 +1,8 @@
 {
-  "name": "typescript-action",
+  "name": "setup-custom-tool",
   "version": "0.0.0",
   "private": true,
-  "description": "TypeScript template action",
+  "description": "Download and unpack a tool of your choice",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -15,17 +15,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/Alex079/setup-custom-tool.git"
   },
   "keywords": [
     "actions",
-    "node",
+    "tool",
     "setup"
   ],
-  "author": "YourNameOrOrganization",
+  "author": "Alex079",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.0"
+    "@actions/core": "^1.2.0",
+    "@actions/glob": "^0.1.0",
+    "@actions/tool-cache": "^1.3.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.23",

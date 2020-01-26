@@ -1,0 +1,31 @@
+name: "build-test"
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - 'releases/*'
+jobs:
+  build:
+    runs-on: ${{matrix.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v1
+      - run: |
+          npm install
+          npm run all
+  test:
+    runs-on: ${{matrix.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: ./
+        with: 
+          toolUrl: https://file-examples.com/wp-content/uploads/2017/02/zip_2MB.zip
+          archiveGlob: *
