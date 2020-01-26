@@ -2,11 +2,20 @@ name: 'setup-custom-tool'
 description: 'Download and unpack a tool of your choice'
 author: 'Alex079'
 inputs:
-  toolUrl:
+  archiveUrl:
     description: 'URL to download from'
     required: true
   archiveGlob:
-    description: 'A glob expression to find directory inside archive to add to path after unpacking'
+    description: 'Glob expression to find directory inside archive to add to path after unpacking'
+    required: false
+  toolName:
+    description: 'Name of the tool in cache'
+    required: false
+  toolVersion:
+    description: 'Version of the tool in cache'
+    required: false
+  toolArch:
+    description: 'Target platform architecture of the tool in cache'
     required: false
 runs:
   using: 'node12'

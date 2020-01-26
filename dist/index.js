@@ -2195,37 +2195,19 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
-const tool = __importStar(__webpack_require__(533));
-const glob = __importStar(__webpack_require__(281));
-const path = __importStar(__webpack_require__(622));
-function extract(url) {
-    if (url.endsWith('.tar.gz') || url.endsWith('.tgz')) {
-        return tool.extractTar;
-    }
-    else if (url.endsWith('.zip')) {
-        return tool.extractZip;
-    }
-    else {
-        return tool.extract7z;
-    }
-}
-function findFirst(expression) {
-    return (folder) => __awaiter(this, void 0, void 0, function* () {
-        return glob
-            .create(path.join(folder, expression))
-            .then((globber) => __awaiter(this, void 0, void 0, function* () { return globber.glob(); }))
-            .then(found => found[0]);
-    });
-}
+const downloader_1 = __webpack_require__(856);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const url = core.getInput('toolUrl', { required: true });
+            const url = core.getInput('archiveUrl', { required: true });
             const expression = core.getInput('archiveGlob');
-            yield tool
-                .downloadTool(url)
-                .then(extract(url))
-                .then(findFirst(expression))
+            const cache = {
+                name: core.getInput('toolName'),
+                version: core.getInput('toolVersion'),
+                arch: core.getInput('toolArch')
+            };
+            yield downloader_1.materialize(url, cache)
+                .then(downloader_1.findFirst(expression))
                 .then(core.addPath)
                 .catch(core.setFailed);
         }
@@ -6112,6 +6094,80 @@ module.exports = v4;
 /***/ (function(module) {
 
 module.exports = require("url");
+
+/***/ }),
+
+/***/ 856:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const tool = __importStar(__webpack_require__(533));
+const glob = __importStar(__webpack_require__(281));
+const path = __importStar(__webpack_require__(622));
+function materialize(url, cache) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const folder = getCache(cache);
+        if (folder) {
+            return folder;
+        }
+        return tool
+            .downloadTool(url)
+            .then(extract(url))
+            .then(setCache(cache));
+    });
+}
+exports.materialize = materialize;
+function getCache(cache) {
+    if (cache.name && cache.version) {
+        return tool.find(cache.name, cache.version, cache.arch);
+    }
+    return '';
+}
+function setCache(cache) {
+    if (cache.name && cache.version) {
+        return (folder) => __awaiter(this, void 0, void 0, function* () { return tool.cacheDir(folder, cache.name, cache.version, cache.arch); });
+    }
+    return (folder) => __awaiter(this, void 0, void 0, function* () { return folder; });
+}
+function extract(url) {
+    if (url.endsWith('.tar.gz') || url.endsWith('.tgz')) {
+        return tool.extractTar;
+    }
+    else if (url.endsWith('.zip')) {
+        return tool.extractZip;
+    }
+    else {
+        return tool.extract7z;
+    }
+}
+function findFirst(expression) {
+    return (folder) => __awaiter(this, void 0, void 0, function* () {
+        return glob
+            .create(path.join(folder, expression))
+            .then((globber) => __awaiter(this, void 0, void 0, function* () { return globber.glob(); }))
+            .then(found => found[0]);
+    });
+}
+exports.findFirst = findFirst;
+
 
 /***/ }),
 
