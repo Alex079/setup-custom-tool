@@ -1,6 +1,6 @@
 # Setup custom tool
 
-![build](workflows/build/badge.svg) ![test](workflows/test/badge.svg)
+![build](https://github.com/Alex079/setup-custom-tool/workflows/build/badge.svg) ![test](https://github.com/Alex079/setup-custom-tool/workflows/test/badge.svg)
 
 This action can download, unpack, and add to PATH a tool of your choice.
 The supported archive types are `.tgz`, `.tar.gz`, `.zip`, `.7z`.
