@@ -2207,8 +2207,12 @@ function run() {
                 arch: core.getInput('toolArch')
             };
             yield downloader_1.materialize(url, cache)
-                .then(downloader_1.findFirst(expression))
-                .then(core.addPath)
+                .then(downloader_1.findGlob(expression))
+                .then(found => {
+                for (const path of found) {
+                    core.addPath(path);
+                }
+            })
                 .catch(core.setFailed);
         }
         catch (error) {
@@ -6158,15 +6162,10 @@ function extract(url) {
         return tool.extract7z;
     }
 }
-function findFirst(expression) {
-    return (folder) => __awaiter(this, void 0, void 0, function* () {
-        return glob
-            .create(path.join(folder, expression))
-            .then((globber) => __awaiter(this, void 0, void 0, function* () { return globber.glob(); }))
-            .then(found => found[0]);
-    });
+function findGlob(expression) {
+    return (folder) => __awaiter(this, void 0, void 0, function* () { return glob.create(path.join(folder, expression)).then((globber) => __awaiter(this, void 0, void 0, function* () { return globber.glob(); })); });
 }
-exports.findFirst = findFirst;
+exports.findGlob = findGlob;
 
 
 /***/ }),

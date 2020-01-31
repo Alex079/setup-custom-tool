@@ -43,10 +43,6 @@ function extract(url: string): (file: string) => Promise<string> {
   }
 }
 
-export function findFirst(expression: string): (folder: string) => Promise<string> {
-  return async folder =>
-    glob
-      .create(path.join(folder, expression))
-      .then(async globber => globber.glob())
-      .then(found => found[0])
+export function findGlob(expression: string): (folder: string) => Promise<string[]> {
+  return async folder => glob.create(path.join(folder, expression)).then(async globber => globber.glob())
 }

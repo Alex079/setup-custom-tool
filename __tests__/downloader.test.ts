@@ -68,7 +68,8 @@ test('downloading 7z with cache hit', async () => {
 test('finding subfolder', async () => {
   const globCreate = jest.spyOn(glob, 'create')
 
-  await d.findFirst('subfolder')('tmp folder')
+  const result = await d.findGlob('subfolder')('tmp folder')
 
   expect(globCreate).toHaveBeenCalledTimes(1)
+  expect(result).toStrictEqual([])
 })

@@ -1,5 +1,5 @@
 name: 'setup-custom-tool'
-description: 'Download and unpack a tool of your choice'
+description: 'Download, unpack, and add to PATH a tool of your choice'
 author: 'Alex079'
 inputs:
   archiveUrl:

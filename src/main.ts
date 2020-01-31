@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import {materialize, findFirst} from './downloader'
+import {materialize, findGlob} from './downloader'
 
 async function run(): Promise<void> {
   try {
@@ -11,8 +11,12 @@ async function run(): Promise<void> {
       arch: core.getInput('toolArch')
     }
     await materialize(url, cache)
-      .then(findFirst(expression))
-      .then(core.addPath)
+      .then(findGlob(expression))
+      .then(found => {
+        for (const path of found) {
+          core.addPath(path)
+        }
+      })
       .catch(core.setFailed)
   } catch (error) {
     core.setFailed(error.message)
