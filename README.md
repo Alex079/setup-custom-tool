@@ -1,7 +1,5 @@
 # Setup custom tool
 
-![build](https://github.com/Alex079/setup-custom-tool/workflows/build/badge.svg) ![test](https://github.com/Alex079/setup-custom-tool/workflows/test/badge.svg)
-
 <a href="https://github.com/Alex079/setup-custom-tool/actions?query=workflow%3Abuild"><img src="https://github.com/Alex079/setup-custom-tool/workflows/build/badge.svg" /></a>
 <a href="https://github.com/Alex079/setup-custom-tool/actions?query=workflow%3Atest"><img src="https://github.com/Alex079/setup-custom-tool/workflows/test/badge.svg" /></a>
 
