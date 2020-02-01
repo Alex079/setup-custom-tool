@@ -2,6 +2,9 @@
 
 ![build](https://github.com/Alex079/setup-custom-tool/workflows/build/badge.svg) ![test](https://github.com/Alex079/setup-custom-tool/workflows/test/badge.svg)
 
+<a href="actions?query=workflow%3Abuild"><img src="workflows/build/badge.svg" /></a>
+<a href="actions?query=workflow%3Atest"><img src="workflows/test/badge.svg" /></a>
+
 This action can download, unpack, and add to PATH a tool of your choice.
 The supported archive types are `.tgz`, `.tar.gz`, `.zip`, `.7z`.
 The unpacked tool can be cached and reused.
