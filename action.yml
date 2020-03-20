@@ -18,5 +18,5 @@ inputs:
     description: 'Target platform architecture of the tool in cache'
     required: false
 runs:
-  using: 'node12'
+  using: 'node13'
   main: 'dist/index.js'
