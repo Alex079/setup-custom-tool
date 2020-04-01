@@ -34,7 +34,7 @@ function setCache(cache: CacheOptions): (folder: string) => Promise<string> {
 }
 
 function extract(url: string): (file: string) => Promise<string> {
-  if (url.endsWith('.tar.gz') || url.endsWith('.tar.xz') || url.endsWith('.tar.bz2') || url.endsWith('.tgz')) {
+  if (url.endsWith('.tar.gz') || url.endsWith('.tgz')) {
     return tool.extractTar;
   } else if (url.endsWith('.zip')) {
     return tool.extractZip;
