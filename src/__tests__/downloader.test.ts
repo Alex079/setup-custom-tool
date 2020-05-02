@@ -1,4 +1,4 @@
-import * as d from '../src/downloader';
+import * as d from '../downloader';
 import * as tool from '@actions/tool-cache';
 import * as glob from '@actions/glob';
 

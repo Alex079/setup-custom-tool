@@ -5,8 +5,8 @@ import { rmdirSync } from 'fs';
 import { ExecSyncOptions, execSync } from 'child_process';
 
 test('test all parameters', () => {
-  const cmd = path.join(__dirname, '..', 'dist', 'index.js');
-  const target = path.join(__dirname, '..', 'target');
+  const cmd = path.join(__dirname, '..', '..', 'dist', 'index.js');
+  const target = path.join(__dirname, '..', '..', 'target');
   const options: ExecSyncOptions = {
     env: {
       ...process.env,
@@ -27,8 +27,8 @@ test('test all parameters', () => {
 });
 
 test('test required parameters', () => {
-  const cmd = path.join(__dirname, '..', 'dist', 'index.js');
-  const target = path.join(__dirname, '..', 'target');
+  const cmd = path.join(__dirname, '..', '..', 'dist', 'index.js');
+  const target = path.join(__dirname, '..', '..', 'target');
   const options: ExecSyncOptions = {
     env: {
       ...process.env,
