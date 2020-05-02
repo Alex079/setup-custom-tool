@@ -1,6 +1,6 @@
 {
   "name": "setup-custom-tool",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "private": true,
   "description": "Download and unpack a tool of your choice",
   "main": "lib/main.js",

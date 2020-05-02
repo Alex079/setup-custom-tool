@@ -6332,7 +6332,7 @@ function setCache(cache) {
     return (folder) => __awaiter(this, void 0, void 0, function* () { return folder; });
 }
 function extract(url) {
-    if (url.endsWith('.tar.gz') || url.endsWith('.tar.xz') || url.endsWith('.tar.bz2') || url.endsWith('.tgz')) {
+    if (url.endsWith('.tar.gz') || url.endsWith('.tgz')) {
         return tool.extractTar;
     }
     else if (url.endsWith('.zip')) {
