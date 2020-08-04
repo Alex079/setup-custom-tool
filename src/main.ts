@@ -1,5 +1,5 @@
 import * as core from '@actions/core';
-import { materialize, findGlob } from './downloader';
+import { findGlob, materialize } from './downloader';
 
 async function run(): Promise<void> {
   try {
