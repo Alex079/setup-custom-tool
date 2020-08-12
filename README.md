@@ -18,25 +18,3 @@ See [action.yml](action.yml) for parameters description.
 ### Example
 
 See [test.yml](.github/workflows/test.yml) for a workflow example.
-
-## Coding
-
-### Install the dependencies  
-```
-$ npm install
-```
-
-### Run build
-```
-$ npm run build
-```
-
-### Run test
-```
-$ npm run test
-```
-
-### Run all
-```
-$ npm run all
-```
