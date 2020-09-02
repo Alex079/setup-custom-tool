@@ -35,7 +35,7 @@ jobs:
           - .tar.gz
     steps:
       - name: Deploy ${{matrix.ext}}
-        uses: Alex079/setup-custom-tool@v1
+        uses: Alex079/setup-custom-tool@${GITHUB_SHA}
         with: 
           archiveUrl: https://github.com/Alex079/setup-custom-tool/wiki/sample/content${{matrix.ext}}
           archiveGlob: '*'
