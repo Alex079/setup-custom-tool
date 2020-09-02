@@ -1,7 +1,6 @@
 # Setup custom tool
 
-<a href="https://github.com/Alex079/setup-custom-tool/actions?query=workflow%3Abuild"><img src="https://github.com/Alex079/setup-custom-tool/workflows/build/badge.svg" /></a>
-<a href="https://github.com/Alex079/setup-custom-tool/actions?query=workflow%3Atest"><img src="https://github.com/Alex079/setup-custom-tool/workflows/test/badge.svg" /></a>
+<a href="https://github.com/Alex079/setup-custom-tool/actions?query=workflow%3ACI"><img src="https://github.com/Alex079/setup-custom-tool/workflows/CI/badge.svg" /></a>
 
 This action can download, unpack, and add to PATH a tool of your choice.
 The supported archive types are `.tgz`, `.tar.gz`, `.zip`, `.7z`.
@@ -17,4 +16,30 @@ See [action.yml](action.yml) for parameters description.
 
 ### Example
 
-See [test.yml](.github/workflows/test.yml) for a workflow example.
+```
+name: My build
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+  build:
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v2
+      - name: Deploy 'customTool'
+        uses: Alex079/setup-custom-tool@v1
+        with:
+          archiveUrl: <direct download URL of 'customTool' archive>
+          archiveGlob: '*/bin'
+      - name: Run 'customTool' on current repository
+        run: customTool -f ./
+```
