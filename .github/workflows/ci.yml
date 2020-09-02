@@ -34,8 +34,10 @@ jobs:
           - .zip
           - .tar.gz
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Deploy ${{matrix.ext}}
-        uses: Alex079/setup-custom-tool@${{github.sha}}
+        uses: ./
         with: 
           archiveUrl: https://github.com/Alex079/setup-custom-tool/wiki/sample/content${{matrix.ext}}
           archiveGlob: '*'
