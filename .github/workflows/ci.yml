@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  - pull_request
+  - push
+
+jobs:
+  build:
+    name: Install, build, test on ${{matrix.os}}
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+    steps:
+      - name: a
+        uses: actions/checkout@v2
+      - run: |
+          npm install
+          npm run all
+  run:
+    name: Deploy ${{matrix.ext}} on ${{matrix.os}}
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+        ext:
+          - .zip
+          - .tar.gz
+    steps:
+      - uses: Alex079/setup-custom-tool@v1
+        with: 
+          archiveUrl: https://github.com/Alex079/setup-custom-tool/wiki/sample/content${{matrix.ext}}
+          archiveGlob: *
