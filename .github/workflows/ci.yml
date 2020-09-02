@@ -36,4 +36,4 @@ jobs:
       - uses: Alex079/setup-custom-tool@v1
         with: 
           archiveUrl: https://github.com/Alex079/setup-custom-tool/wiki/sample/content${{matrix.ext}}
-          archiveGlob: *
+          archiveGlob: '*'
