@@ -15,9 +15,10 @@ jobs:
           - windows-latest
           - macos-latest
     steps:
-      - name: a
+      - name: Checkout
         uses: actions/checkout@v2
-      - run: |
+      - name: Run npm
+        run: |
           npm install
           npm run all
   run:
@@ -33,7 +34,8 @@ jobs:
           - .zip
           - .tar.gz
     steps:
-      - uses: Alex079/setup-custom-tool@v1
+      - name: Deploy ${{matrix.ext}}
+        uses: Alex079/setup-custom-tool@v1
         with: 
           archiveUrl: https://github.com/Alex079/setup-custom-tool/wiki/sample/content${{matrix.ext}}
           archiveGlob: '*'
