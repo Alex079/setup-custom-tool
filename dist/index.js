@@ -55,7 +55,10 @@ function setCache(cache) {
     return async (folder) => folder;
 }
 function extract(url) {
-    if (url.endsWith('.tar.gz') || url.endsWith('.tgz')) {
+    if (url.endsWith('.tar.bz2')) {
+        return file => tool.extractTar(file, undefined, 'xj');
+    }
+    else if (url.endsWith('.tar.gz') || url.endsWith('.tgz')) {
         return tool.extractTar;
     }
     else if (url.endsWith('.zip')) {

@@ -33,6 +33,7 @@ jobs:
         ext:
           - .zip
           - .tar.gz
+          - .tar.bz2
     steps:
       - name: Checkout
         uses: actions/checkout@v2
