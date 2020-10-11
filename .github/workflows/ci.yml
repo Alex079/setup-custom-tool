@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Run npm
+      - name: Run
         run: |
           yarn install
           yarn run all
