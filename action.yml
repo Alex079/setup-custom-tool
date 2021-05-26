@@ -1,7 +1,8 @@
 name: 'Setup custom tool'
 description: 'Download, unpack, and add to PATH a tool of your choice'
-icon: 'download'
-color: 'purple'
+branding:
+  icon: 'download'
+  color: 'purple'
 author: 'Alex079'
 inputs:
   archiveUrl:
