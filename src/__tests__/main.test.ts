@@ -23,7 +23,7 @@ test('test all parameters', () => {
   try {
     console.log(execSync(`node ${cmd}`, options).toString());
   }
-  catch (e) {
+  catch (e: any /* SpawnSyncReturns<Buffer> */) {
     console.error(e.stdout.toString());
     throw e;
   }
@@ -31,7 +31,7 @@ test('test all parameters', () => {
   try {
     console.log(execSync(`node ${cmd}`, options).toString());
   }
-  catch (e) {
+  catch (e: any /* SpawnSyncReturns<Buffer> */) {
     console.error(e.stdout.toString());
     throw e;
   }
@@ -53,7 +53,7 @@ test('test required parameters', () => {
   try {
     console.log(execSync(`node ${cmd}`, options).toString());
   }
-  catch (e) {
+  catch (e: any /* SpawnSyncReturns<Buffer> */) {
     console.error(e.stdout.toString());
     throw e;
   }
