@@ -18,8 +18,8 @@ async function run(): Promise<void> {
         }
       })
       .catch(core.setFailed);
-  } catch (error: any) {
-    core.setFailed(error.message);
+  } catch (e) {
+    core.setFailed(e as Error);
   }
 }
 
