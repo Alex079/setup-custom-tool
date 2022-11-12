@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import * as process from 'process';
 import * as path from 'path';
-import { rmdirSync } from 'fs';
+import { rmSync } from 'fs';
 import { execSync, ExecSyncOptions } from 'child_process';
 
 test('test all parameters', () => {
@@ -23,19 +23,19 @@ test('test all parameters', () => {
   try {
     console.log(execSync(`node ${cmd}`, options).toString());
   }
-  catch (e: any /* SpawnSyncReturns<Buffer> */) {
-    console.error(e.stdout.toString());
+  catch (e) {
+    console.error(e);
     throw e;
   }
   console.log('Second run - get from cache');
   try {
     console.log(execSync(`node ${cmd}`, options).toString());
   }
-  catch (e: any /* SpawnSyncReturns<Buffer> */) {
-    console.error(e.stdout.toString());
+  catch (e) {
+    console.error(e);
     throw e;
   }
-  rmdirSync(target, { recursive: true });
+  rmSync(target, { recursive: true });
 });
 
 test('test required parameters', () => {
@@ -53,9 +53,9 @@ test('test required parameters', () => {
   try {
     console.log(execSync(`node ${cmd}`, options).toString());
   }
-  catch (e: any /* SpawnSyncReturns<Buffer> */) {
-    console.error(e.stdout.toString());
+  catch (e) {
+    console.error(e);
     throw e;
   }
-  rmdirSync(target, { recursive: true });
+  rmSync(target, { recursive: true });
 });
