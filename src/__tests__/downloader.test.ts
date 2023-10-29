@@ -2,263 +2,292 @@ import * as d from '../downloader';
 import * as tool from '@actions/tool-cache';
 import * as glob from '@actions/glob';
 
+jest
+  .mock('@actions/tool-cache')
+  .mock('@actions/glob');
+
+const mockedTool = (tool as jest.Mocked<typeof tool>);
+const mockedGlob = (glob as jest.Mocked<typeof glob>);
+
+beforeEach(jest.resetAllMocks);
+
 test('downloading zip with cache hit', async () => {
-  const findInCache = jest.spyOn(tool, 'find').mockImplementation(() => 'cached folder');
-  const download = jest.spyOn(tool, 'downloadTool');
-  const extractZip = jest.spyOn(tool, 'extractZip');
-  const extractTar = jest.spyOn(tool, 'extractTar');
-  const extract7z = jest.spyOn(tool, 'extract7z');
-  const putInCache = jest.spyOn(tool, 'cacheDir');
+  mockedTool.find.mockImplementation(() => 'cached folder');
 
   const result = await d.materialize('URL.zip', { name: 'tool', version: '1.1', arch: '' });
 
-  expect(findInCache).toHaveBeenCalledTimes(1);
-  expect(findInCache).toHaveBeenCalledWith('tool', '1.1', '');
-  expect(download).not.toHaveBeenCalled();
-  expect(extractZip).not.toHaveBeenCalled();
-  expect(extractTar).not.toHaveBeenCalled();
-  expect(extract7z).not.toHaveBeenCalled();
-  expect(putInCache).not.toHaveBeenCalled();
+  expect(tool.find).toHaveBeenCalledWith('tool', '1.1', '');
+  expect(tool.downloadTool).not.toHaveBeenCalled();
+  expect(tool.extractZip).not.toHaveBeenCalled();
+  expect(tool.extractTar).not.toHaveBeenCalled();
+  expect(tool.extract7z).not.toHaveBeenCalled();
+  expect(tool.extractXar).not.toHaveBeenCalled();
+  expect(tool.cacheDir).not.toHaveBeenCalled();
   expect(result).toBe('cached folder');
 });
 
 test('downloading zip with cache miss', async () => {
-  const findInCache = jest.spyOn(tool, 'find').mockImplementation();
-  const download = jest.spyOn(tool, 'downloadTool').mockImplementation(async () => 'tmp file');
-  const extractZip = jest.spyOn(tool, 'extractZip').mockImplementation(async () => 'tmp folder');
-  const extractTar = jest.spyOn(tool, 'extractTar');
-  const extract7z = jest.spyOn(tool, 'extract7z');
-  const putInCache = jest.spyOn(tool, 'cacheDir').mockImplementation(async () => 'cached folder');
+  mockedTool.find.mockImplementation(() => '');
+  mockedTool.downloadTool.mockImplementation(async () => 'tmp file');
+  mockedTool.extractZip.mockImplementation(async () => 'tmp folder');
+  mockedTool.cacheDir.mockImplementation(async () => 'cached folder');
 
   const result = await d.materialize('URL.zip', { name: 'tool', version: '1.1', arch: '' });
 
-  expect(findInCache).toHaveBeenCalledTimes(1);
-  expect(download).toHaveBeenCalledTimes(1);
-  expect(download).toHaveBeenCalledWith('URL.zip');
-  expect(extractZip).toHaveBeenCalledTimes(1);
-  expect(extractZip).toHaveBeenCalledWith('tmp file');
-  expect(extractTar).not.toHaveBeenCalled();
-  expect(extract7z).not.toHaveBeenCalled();
-  expect(putInCache).toHaveBeenCalledTimes(1);
-  expect(putInCache).toHaveBeenCalledWith('tmp folder', 'tool', '1.1', '');
+  expect(tool.find).toHaveBeenCalledWith('tool', '1.1', '');
+  expect(tool.downloadTool).toHaveBeenCalledWith('URL.zip');
+  expect(tool.extractZip).toHaveBeenCalledWith('tmp file');
+  expect(tool.extractTar).not.toHaveBeenCalled();
+  expect(tool.extract7z).not.toHaveBeenCalled();
+  expect(tool.extractXar).not.toHaveBeenCalled();
+  expect(tool.cacheDir).toHaveBeenCalledWith('tmp folder', 'tool', '1.1', '');
   expect(result).toBe('cached folder');
 });
 
 test('downloading zip without caching', async () => {
-  const findInCache = jest.spyOn(tool, 'find').mockImplementation();
-  const download = jest.spyOn(tool, 'downloadTool').mockImplementation(async () => 'tmp file');
-  const extractZip = jest.spyOn(tool, 'extractZip').mockImplementation(async () => 'tmp folder');
-  const extractTar = jest.spyOn(tool, 'extractTar');
-  const extract7z = jest.spyOn(tool, 'extract7z');
-  const putInCache = jest.spyOn(tool, 'cacheDir');
-
+  mockedTool.downloadTool.mockImplementation(async () => 'tmp file');
+  mockedTool.extractZip.mockImplementation(async () => 'tmp folder');
+  
   const result = await d.materialize('URL.zip', { name: '', version: '', arch: '' });
 
-  expect(findInCache).not.toHaveBeenCalled();
-  expect(download).toHaveBeenCalledTimes(1);
-  expect(download).toHaveBeenCalledWith('URL.zip');
-  expect(extractZip).toHaveBeenCalledTimes(1);
-  expect(extractZip).toHaveBeenCalledWith('tmp file');
-  expect(extractTar).not.toHaveBeenCalled();
-  expect(extract7z).not.toHaveBeenCalled();
-  expect(putInCache).not.toHaveBeenCalled();
+  expect(tool.find).not.toHaveBeenCalled();
+  expect(tool.downloadTool).toHaveBeenCalledWith('URL.zip');
+  expect(tool.extractZip).toHaveBeenCalledWith('tmp file');
+  expect(tool.extractTar).not.toHaveBeenCalled();
+  expect(tool.extract7z).not.toHaveBeenCalled();
+  expect(tool.extractXar).not.toHaveBeenCalled();
+  expect(tool.cacheDir).not.toHaveBeenCalled();
   expect(result).toBe('tmp folder');
 });
 
 test('downloading tar.bz2 with cache hit', async () => {
-  const findInCache = jest.spyOn(tool, 'find').mockImplementation(() => 'cached folder');
-  const download = jest.spyOn(tool, 'downloadTool');
-  const extractZip = jest.spyOn(tool, 'extractZip');
-  const extractTar = jest.spyOn(tool, 'extractTar');
-  const extract7z = jest.spyOn(tool, 'extract7z');
-  const putInCache = jest.spyOn(tool, 'cacheDir');
+  mockedTool.find.mockImplementation(() => 'cached folder');
 
-  const result = await d.materialize('URL.tar.bz2', { name: 'tool', version: '1.1', arch: '' });
+  const result = await d.materialize('URL.zip', { name: 'tool', version: '1.1', arch: '' });
 
-  expect(findInCache).toHaveBeenCalledTimes(1);
-  expect(findInCache).toHaveBeenCalledWith('tool', '1.1', '');
-  expect(download).not.toHaveBeenCalled();
-  expect(extractZip).not.toHaveBeenCalled();
-  expect(extractTar).not.toHaveBeenCalled();
-  expect(extract7z).not.toHaveBeenCalled();
-  expect(putInCache).not.toHaveBeenCalled();
+  expect(tool.find).toHaveBeenCalledWith('tool', '1.1', '');
+  expect(tool.downloadTool).not.toHaveBeenCalled();
+  expect(tool.extractZip).not.toHaveBeenCalled();
+  expect(tool.extractTar).not.toHaveBeenCalled();
+  expect(tool.extract7z).not.toHaveBeenCalled();
+  expect(tool.extractXar).not.toHaveBeenCalled();
+  expect(tool.cacheDir).not.toHaveBeenCalled();
   expect(result).toBe('cached folder');
 });
 
 test('downloading tar.bz2 with cache miss', async () => {
-  const findInCache = jest.spyOn(tool, 'find').mockImplementation();
-  const download = jest.spyOn(tool, 'downloadTool').mockImplementation(async () => 'tmp file');
-  const extractZip = jest.spyOn(tool, 'extractZip');
-  const extractTar = jest.spyOn(tool, 'extractTar').mockImplementation(async () => 'tmp folder');
-  const extract7z = jest.spyOn(tool, 'extract7z');
-  const putInCache = jest.spyOn(tool, 'cacheDir').mockImplementation(async () => 'cached folder');
+  mockedTool.find.mockImplementation(() => '');
+  mockedTool.downloadTool.mockImplementation(async () => 'tmp file');
+  mockedTool.extractTar.mockImplementation(async () => 'tmp folder');
+  mockedTool.cacheDir.mockImplementation(async () => 'cached folder');
 
   const result = await d.materialize('URL.tar.bz2', { name: 'tool', version: '1.1', arch: '' });
 
-  expect(findInCache).toHaveBeenCalledTimes(1);
-  expect(download).toHaveBeenCalledTimes(1);
-  expect(download).toHaveBeenCalledWith('URL.tar.bz2');
-  expect(extractZip).not.toHaveBeenCalled();
-  expect(extractTar).toHaveBeenCalledTimes(1);
-  expect(extractTar).toHaveBeenCalledWith('tmp file', undefined, 'xj');
-  expect(extract7z).not.toHaveBeenCalled();
-  expect(putInCache).toHaveBeenCalledTimes(1);
-  expect(putInCache).toHaveBeenCalledWith('tmp folder', 'tool', '1.1', '');
+  expect(tool.find).toHaveBeenCalledWith('tool', '1.1', '');
+  expect(tool.downloadTool).toHaveBeenCalledWith('URL.tar.bz2');
+  expect(tool.extractZip).not.toHaveBeenCalled();
+  expect(tool.extractTar).toHaveBeenCalledWith('tmp file', undefined, 'xj');
+  expect(tool.extract7z).not.toHaveBeenCalled();
+  expect(tool.extractXar).not.toHaveBeenCalled();
+  expect(tool.cacheDir).toHaveBeenCalledWith('tmp folder', 'tool', '1.1', '');
   expect(result).toBe('cached folder');
 });
 
 test('downloading tar.bz2 without caching', async () => {
-  const findInCache = jest.spyOn(tool, 'find').mockImplementation();
-  const download = jest.spyOn(tool, 'downloadTool').mockImplementation(async () => 'tmp file');
-  const extractZip = jest.spyOn(tool, 'extractZip');
-  const extractTar = jest.spyOn(tool, 'extractTar').mockImplementation(async () => 'tmp folder');
-  const extract7z = jest.spyOn(tool, 'extract7z');
-  const putInCache = jest.spyOn(tool, 'cacheDir');
-
+  mockedTool.downloadTool.mockImplementation(async () => 'tmp file');
+  mockedTool.extractTar.mockImplementation(async () => 'tmp folder');
+  
   const result = await d.materialize('URL.tar.bz2', { name: '', version: '', arch: '' });
 
-  expect(findInCache).not.toHaveBeenCalled();
-  expect(download).toHaveBeenCalledTimes(1);
-  expect(download).toHaveBeenCalledWith('URL.tar.bz2');
-  expect(extractZip).not.toHaveBeenCalled();
-  expect(extractTar).toHaveBeenCalledTimes(1);
-  expect(extractTar).toHaveBeenCalledWith('tmp file', undefined, 'xj');
-  expect(extract7z).not.toHaveBeenCalled();
-  expect(putInCache).not.toHaveBeenCalled();
+  expect(tool.find).not.toHaveBeenCalled();
+  expect(tool.downloadTool).toHaveBeenCalledWith('URL.tar.bz2');
+  expect(tool.extractZip).not.toHaveBeenCalled();
+  expect(tool.extractTar).toHaveBeenCalledWith('tmp file', undefined, 'xj');
+  expect(tool.extract7z).not.toHaveBeenCalled();
+  expect(tool.extractXar).not.toHaveBeenCalled();
+  expect(tool.cacheDir).not.toHaveBeenCalled();
   expect(result).toBe('tmp folder');
 });
 
 test('downloading tar.gz with cache hit', async () => {
-  const findInCache = jest.spyOn(tool, 'find').mockImplementation(() => 'cached folder');
-  const download = jest.spyOn(tool, 'downloadTool');
-  const extractZip = jest.spyOn(tool, 'extractZip');
-  const extractTar = jest.spyOn(tool, 'extractTar');
-  const extract7z = jest.spyOn(tool, 'extract7z');
-  const putInCache = jest.spyOn(tool, 'cacheDir');
+  mockedTool.find.mockImplementation(() => 'cached folder');
 
-  const result = await d.materialize('URL.tar.gz', { name: 'tool', version: '1.1', arch: '' });
+  const result = await d.materialize('URL.zip', { name: 'tool', version: '1.1', arch: '' });
 
-  expect(findInCache).toHaveBeenCalledTimes(1);
-  expect(findInCache).toHaveBeenCalledWith('tool', '1.1', '');
-  expect(download).not.toHaveBeenCalled();
-  expect(extractZip).not.toHaveBeenCalled();
-  expect(extractTar).not.toHaveBeenCalled();
-  expect(extract7z).not.toHaveBeenCalled();
-  expect(putInCache).not.toHaveBeenCalled();
+  expect(tool.find).toHaveBeenCalledWith('tool', '1.1', '');
+  expect(tool.downloadTool).not.toHaveBeenCalled();
+  expect(tool.extractZip).not.toHaveBeenCalled();
+  expect(tool.extractTar).not.toHaveBeenCalled();
+  expect(tool.extract7z).not.toHaveBeenCalled();
+  expect(tool.extractXar).not.toHaveBeenCalled();
+  expect(tool.cacheDir).not.toHaveBeenCalled();
   expect(result).toBe('cached folder');
 });
 
 test('downloading tar.gz with cache miss', async () => {
-  const findInCache = jest.spyOn(tool, 'find').mockImplementation();
-  const download = jest.spyOn(tool, 'downloadTool').mockImplementation(async () => 'tmp file');
-  const extractZip = jest.spyOn(tool, 'extractZip');
-  const extractTar = jest.spyOn(tool, 'extractTar').mockImplementation(async () => 'tmp folder');
-  const extract7z = jest.spyOn(tool, 'extract7z');
-  const putInCache = jest.spyOn(tool, 'cacheDir').mockImplementation(async () => 'cached folder');
+  mockedTool.find.mockImplementation(() => '');
+  mockedTool.downloadTool.mockImplementation(async () => 'tmp file');
+  mockedTool.extractTar.mockImplementation(async () => 'tmp folder');
+  mockedTool.cacheDir.mockImplementation(async () => 'cached folder');
 
   const result = await d.materialize('URL.tar.gz', { name: 'tool', version: '1.1', arch: '' });
 
-  expect(findInCache).toHaveBeenCalledTimes(1);
-  expect(download).toHaveBeenCalledTimes(1);
-  expect(download).toHaveBeenCalledWith('URL.tar.gz');
-  expect(extractZip).not.toHaveBeenCalled();
-  expect(extractTar).toHaveBeenCalledTimes(1);
-  expect(extractTar).toHaveBeenCalledWith('tmp file');
-  expect(extract7z).not.toHaveBeenCalled();
-  expect(putInCache).toHaveBeenCalledTimes(1);
-  expect(putInCache).toHaveBeenCalledWith('tmp folder', 'tool', '1.1', '');
+  expect(tool.find).toHaveBeenCalledWith('tool', '1.1', '');
+  expect(tool.downloadTool).toHaveBeenCalledWith('URL.tar.gz');
+  expect(tool.extractZip).not.toHaveBeenCalled();
+  expect(tool.extractTar).toHaveBeenCalledWith('tmp file');
+  expect(tool.extract7z).not.toHaveBeenCalled();
+  expect(tool.extractXar).not.toHaveBeenCalled();
+  expect(tool.cacheDir).toHaveBeenCalledWith('tmp folder', 'tool', '1.1', '');
   expect(result).toBe('cached folder');
 });
 
 test('downloading tar.gz without caching', async () => {
-  const findInCache = jest.spyOn(tool, 'find').mockImplementation();
-  const download = jest.spyOn(tool, 'downloadTool').mockImplementation(async () => 'tmp file');
-  const extractZip = jest.spyOn(tool, 'extractZip');
-  const extractTar = jest.spyOn(tool, 'extractTar').mockImplementation(async () => 'tmp folder');
-  const extract7z = jest.spyOn(tool, 'extract7z');
-  const putInCache = jest.spyOn(tool, 'cacheDir');
-
+  mockedTool.downloadTool.mockImplementation(async () => 'tmp file');
+  mockedTool.extractTar.mockImplementation(async () => 'tmp folder');
+  
   const result = await d.materialize('URL.tar.gz', { name: '', version: '', arch: '' });
 
-  expect(findInCache).not.toHaveBeenCalled();
-  expect(download).toHaveBeenCalledTimes(1);
-  expect(download).toHaveBeenCalledWith('URL.tar.gz');
-  expect(extractZip).not.toHaveBeenCalled();
-  expect(extractTar).toHaveBeenCalledTimes(1);
-  expect(extractTar).toHaveBeenCalledWith('tmp file');
-  expect(extract7z).not.toHaveBeenCalled();
-  expect(putInCache).not.toHaveBeenCalled();
+  expect(tool.find).not.toHaveBeenCalled();
+  expect(tool.downloadTool).toHaveBeenCalledWith('URL.tar.gz');
+  expect(tool.extractZip).not.toHaveBeenCalled();
+  expect(tool.extractTar).toHaveBeenCalledWith('tmp file');
+  expect(tool.extract7z).not.toHaveBeenCalled();
+  expect(tool.extractXar).not.toHaveBeenCalled();
+  expect(tool.cacheDir).not.toHaveBeenCalled();
   expect(result).toBe('tmp folder');
 });
 
 test('downloading 7z with cache hit', async () => {
-  const findInCache = jest.spyOn(tool, 'find').mockImplementation(() => 'cached folder');
-  const download = jest.spyOn(tool, 'downloadTool');
-  const extractZip = jest.spyOn(tool, 'extractZip');
-  const extractTar = jest.spyOn(tool, 'extractTar');
-  const extract7z = jest.spyOn(tool, 'extract7z');
-  const putInCache = jest.spyOn(tool, 'cacheDir');
+  mockedTool.find.mockImplementation(() => 'cached folder');
 
   const result = await d.materialize('URL.7z', { name: 'tool', version: '1.1', arch: '' });
 
-  expect(findInCache).toHaveBeenCalledTimes(1);
-  expect(findInCache).toHaveBeenCalledWith('tool', '1.1', '');
-  expect(download).not.toHaveBeenCalled();
-  expect(extractZip).not.toHaveBeenCalled();
-  expect(extractTar).not.toHaveBeenCalled();
-  expect(extract7z).not.toHaveBeenCalled();
-  expect(putInCache).not.toHaveBeenCalled();
+  expect(tool.find).toHaveBeenCalledWith('tool', '1.1', '');
+  expect(tool.downloadTool).not.toHaveBeenCalled();
+  expect(tool.extractZip).not.toHaveBeenCalled();
+  expect(tool.extractTar).not.toHaveBeenCalled();
+  expect(tool.extract7z).not.toHaveBeenCalled();
+  expect(tool.extractXar).not.toHaveBeenCalled();
+  expect(tool.cacheDir).not.toHaveBeenCalled();
   expect(result).toBe('cached folder');
 });
 
 test('downloading 7z with cache miss', async () => {
-  const findInCache = jest.spyOn(tool, 'find').mockImplementation();
-  const download = jest.spyOn(tool, 'downloadTool').mockImplementation(async () => 'tmp file');
-  const extractZip = jest.spyOn(tool, 'extractZip');
-  const extractTar = jest.spyOn(tool, 'extractTar');
-  const extract7z = jest.spyOn(tool, 'extract7z').mockImplementation(async () => 'tmp folder');
-  const putInCache = jest.spyOn(tool, 'cacheDir').mockImplementation(async () => 'cached folder');
+  mockedTool.find.mockImplementation(() => '');
+  mockedTool.downloadTool.mockImplementation(async () => 'tmp file');
+  mockedTool.extract7z.mockImplementation(async () => 'tmp folder');
+  mockedTool.cacheDir.mockImplementation(async () => 'cached folder');
 
   const result = await d.materialize('URL.7z', { name: 'tool', version: '1.1', arch: '' });
 
-  expect(findInCache).toHaveBeenCalledTimes(1);
-  expect(download).toHaveBeenCalledTimes(1);
-  expect(download).toHaveBeenCalledWith('URL.7z');
-  expect(extractZip).not.toHaveBeenCalled();
-  expect(extractTar).not.toHaveBeenCalled();
-  expect(extract7z).toHaveBeenCalledTimes(1);
-  expect(extract7z).toHaveBeenCalledWith('tmp file');
-  expect(putInCache).toHaveBeenCalledTimes(1);
-  expect(putInCache).toHaveBeenCalledWith('tmp folder', 'tool', '1.1', '');
+  expect(tool.find).toHaveBeenCalledWith('tool', '1.1', '');
+  expect(tool.downloadTool).toHaveBeenCalledWith('URL.7z');
+  expect(tool.extractZip).not.toHaveBeenCalled();
+  expect(tool.extractTar).not.toHaveBeenCalled();
+  expect(tool.extract7z).toHaveBeenCalledWith('tmp file');
+  expect(tool.extractXar).not.toHaveBeenCalled();
+  expect(tool.cacheDir).toHaveBeenCalledWith('tmp folder', 'tool', '1.1', '');
   expect(result).toBe('cached folder');
 });
 
 test('downloading 7z without caching', async () => {
-  const findInCache = jest.spyOn(tool, 'find').mockImplementation();
-  const download = jest.spyOn(tool, 'downloadTool');
-  const extractZip = jest.spyOn(tool, 'extractZip');
-  const extractTar = jest.spyOn(tool, 'extractTar');
-  const extract7z = jest.spyOn(tool, 'extract7z').mockImplementation(async () => 'tmp folder');
-  const putInCache = jest.spyOn(tool, 'cacheDir');
-
+  mockedTool.downloadTool.mockImplementation(async () => 'tmp file');
+  mockedTool.extract7z.mockImplementation(async () => 'tmp folder');
+  
   const result = await d.materialize('URL.7z', { name: '', version: '', arch: '' });
 
-  expect(findInCache).not.toHaveBeenCalled();
-  expect(download).toHaveBeenCalledTimes(1);
-  expect(download).toHaveBeenCalledWith('URL.7z');
-  expect(extractZip).not.toHaveBeenCalled();
-  expect(extractTar).not.toHaveBeenCalled();
-  expect(extract7z).toHaveBeenCalledTimes(1);
-  expect(extract7z).toHaveBeenCalledWith('tmp file');
-  expect(putInCache).not.toHaveBeenCalled();
+  expect(tool.find).not.toHaveBeenCalled();
+  expect(tool.downloadTool).toHaveBeenCalledWith('URL.7z');
+  expect(tool.extractZip).not.toHaveBeenCalled();
+  expect(tool.extractTar).not.toHaveBeenCalled();
+  expect(tool.extract7z).toHaveBeenCalledWith('tmp file');
+  expect(tool.extractXar).not.toHaveBeenCalled();
+  expect(tool.cacheDir).not.toHaveBeenCalled();
   expect(result).toBe('tmp folder');
 });
 
-test('finding subfolder', async () => {
-  const globCreate = jest.spyOn(glob, 'create');
+test('downloading xar with cache hit', async () => {
+  mockedTool.find.mockImplementation(() => 'cached folder');
 
-  const result = await d.findGlob('subfolder')('tmp folder');
+  const result = await d.materialize('URL.xar', { name: 'tool', version: '1.1', arch: '' });
 
-  expect(globCreate).toHaveBeenCalledTimes(1);
-  expect(result).toStrictEqual([]);
+  expect(tool.find).toHaveBeenCalledWith('tool', '1.1', '');
+  expect(tool.downloadTool).not.toHaveBeenCalled();
+  expect(tool.extractZip).not.toHaveBeenCalled();
+  expect(tool.extractTar).not.toHaveBeenCalled();
+  expect(tool.extract7z).not.toHaveBeenCalled();
+  expect(tool.extractXar).not.toHaveBeenCalled();
+  expect(tool.cacheDir).not.toHaveBeenCalled();
+  expect(result).toBe('cached folder');
+});
+
+test('downloading xar with cache miss', async () => {
+  mockedTool.find.mockImplementation(() => '');
+  mockedTool.downloadTool.mockImplementation(async () => 'tmp file');
+  mockedTool.extractXar.mockImplementation(async () => 'tmp folder');
+  mockedTool.cacheDir.mockImplementation(async () => 'cached folder');
+
+  const result = await d.materialize('URL.xar', { name: 'tool', version: '1.1'});
+
+  expect(tool.find).toHaveBeenCalledWith('tool', '1.1', undefined);
+  expect(tool.downloadTool).toHaveBeenCalledWith('URL.xar');
+  expect(tool.extractZip).not.toHaveBeenCalled();
+  expect(tool.extractTar).not.toHaveBeenCalled();
+  expect(tool.extract7z).not.toHaveBeenCalled();
+  expect(tool.extractXar).toHaveBeenCalledWith('tmp file');
+  expect(tool.cacheDir).toHaveBeenCalledWith('tmp folder', 'tool', '1.1', undefined);
+  expect(result).toBe('cached folder');
+});
+
+test('downloading xar without caching', async () => {
+  mockedTool.downloadTool.mockImplementation(async () => 'tmp file');
+  mockedTool.extractXar.mockImplementation(async () => 'tmp folder');
+  
+  const result = await d.materialize('URL.xar', {});
+
+  expect(tool.find).not.toHaveBeenCalled();
+  expect(tool.downloadTool).toHaveBeenCalledWith('URL.xar');
+  expect(tool.extractZip).not.toHaveBeenCalled();
+  expect(tool.extractTar).not.toHaveBeenCalled();
+  expect(tool.extract7z).not.toHaveBeenCalled();
+  expect(tool.extractXar).toHaveBeenCalledWith('tmp file');
+  expect(tool.cacheDir).not.toHaveBeenCalled();
+  expect(result).toBe('tmp folder');
+});
+
+test('failed extracting', async () => {
+  mockedTool.downloadTool.mockImplementation(async () => 'tmp file');
+  
+  const result = await d.materialize('URL.archive', { name: 'tool', arch: 'arch' })
+    .catch((error: Error) => expect(error?.message).toBe('Can not extract from URL.archive'));
+
+  expect(tool.find).not.toHaveBeenCalled();
+  expect(tool.downloadTool).toHaveBeenCalledWith('URL.archive');
+  expect(tool.extractZip).not.toHaveBeenCalled();
+  expect(tool.extractTar).not.toHaveBeenCalled();
+  expect(tool.extract7z).not.toHaveBeenCalled();
+  expect(tool.extractXar).not.toHaveBeenCalled();
+  expect(tool.cacheDir).not.toHaveBeenCalled();
+  expect(result).toBeUndefined();
+});
+
+test('globbing subfolder', async () => {
+  mockedGlob.create.mockImplementation(async () =>
+    ({ glob: async () => ['root folder/subfolder/bin'], globGenerator: async function*() {}, getSearchPaths: () => [] }));
+
+  const result = await d.findGlob('*/bin')('root folder');
+
+  expect(glob.create).toHaveBeenCalledWith('root folder/*/bin', { implicitDescendants: false });
+  expect(result).toStrictEqual(['root folder/subfolder/bin']);
+});
+
+test('globbing root folder', async () => {
+  mockedGlob.create.mockImplementation(async () =>
+    ({ glob: async () => ['root folder'], globGenerator: async function*() {}, getSearchPaths: () => [] }));
+
+  const result = await d.findGlob(undefined)('root folder');
+
+  expect(glob.create).toHaveBeenCalledWith('root folder', { implicitDescendants: false });
+  expect(result).toStrictEqual(['root folder']);
 });

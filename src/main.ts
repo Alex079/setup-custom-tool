@@ -12,11 +12,7 @@ async function run(): Promise<void> {
     };
     await materialize(url, cache)
       .then(findGlob(expression))
-      .then(found => {
-        for (const path of found) {
-          core.addPath(path);
-        }
-      })
+      .then(found => found.forEach(core.addPath))
       .catch(core.setFailed);
   } catch (e) {
     core.setFailed(e as Error);

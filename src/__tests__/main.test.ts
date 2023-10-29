@@ -4,19 +4,23 @@ import * as path from 'path';
 import { rmSync } from 'fs';
 import { execSync, ExecSyncOptions } from 'child_process';
 
+const cmd = path.join(__dirname, '..', '..', 'dist', 'index.js');
+const target = path.join(__dirname, '..', '..', 'target');
+const testEnv = {...process.env,
+  RUNNER_TEMP: target,
+  RUNNER_TOOL_CACHE: target
+};
+
+afterAll(() => { rmSync(target, { recursive: true }); });
+
 test('test all parameters', () => {
-  const cmd = path.join(__dirname, '..', '..', 'dist', 'index.js');
-  const target = path.join(__dirname, '..', '..', 'target');
   const options: ExecSyncOptions = {
-    env: {
-      ...process.env,
+    env: {...testEnv,
       INPUT_ARCHIVEURL: 'https://github.com/Alex079/setup-custom-tool/wiki/sample/content.tar.gz',
       INPUT_ARCHIVEGLOB: '*',
       INPUT_TOOLNAME: 'example',
       INPUT_TOOLVERSION: '2017.2.2',
-      INPUT_TOOLARCH: 'none',
-      RUNNER_TEMP: target,
-      RUNNER_TOOL_CACHE: target
+      INPUT_TOOLARCH: 'none'
     }
   };
   console.log('First run - download');
@@ -35,18 +39,12 @@ test('test all parameters', () => {
     console.error(e);
     throw e;
   }
-  rmSync(target, { recursive: true });
 });
 
 test('test required parameters', () => {
-  const cmd = path.join(__dirname, '..', '..', 'dist', 'index.js');
-  const target = path.join(__dirname, '..', '..', 'target');
   const options: ExecSyncOptions = {
-    env: {
-      ...process.env,
-      INPUT_ARCHIVEURL: 'https://github.com/Alex079/setup-custom-tool/wiki/sample/content.zip',
-      RUNNER_TEMP: target,
-      RUNNER_TOOL_CACHE: target
+    env: {...testEnv,
+      INPUT_ARCHIVEURL: 'https://github.com/Alex079/setup-custom-tool/wiki/sample/content.zip'
     }
   };
   console.log('First run - download');
@@ -57,5 +55,4 @@ test('test required parameters', () => {
     console.error(e);
     throw e;
   }
-  rmSync(target, { recursive: true });
 });

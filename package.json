@@ -29,8 +29,8 @@
     "@actions/tool-cache": "^2",
     "@types/jest": "^29",
     "@types/node": "^18",
-    "@typescript-eslint/eslint-plugin": "^5",
-    "@typescript-eslint/parser": "^5",
+    "@typescript-eslint/eslint-plugin": "^6",
+    "@typescript-eslint/parser": "^6",
     "@vercel/ncc": "^0",
     "eslint": "^8",
     "eslint-plugin-jest": "^27",
@@ -38,6 +38,6 @@
     "jest-circus": "^29",
     "js-yaml": "^4",
     "ts-jest": "^29",
-    "typescript": "^4"
+    "typescript": "^5"
   }
 }
