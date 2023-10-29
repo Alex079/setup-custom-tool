@@ -1,6 +1,7 @@
 import * as d from '../downloader';
 import * as tool from '@actions/tool-cache';
 import * as glob from '@actions/glob';
+import path from 'path';
 
 jest
   .mock('@actions/tool-cache')
@@ -273,13 +274,14 @@ test('failed extracting', async () => {
 });
 
 test('globbing subfolder', async () => {
+  const expected = path.join('root folder', 'subfolder', 'bin');
   mockedGlob.create.mockImplementation(async () =>
-    ({ glob: async () => ['root folder/subfolder/bin'], globGenerator: async function*() {}, getSearchPaths: () => [] }));
+    ({ glob: async () => [expected], globGenerator: async function*() {}, getSearchPaths: () => [] }));
 
-  const result = await d.findGlob('*/bin')('root folder');
+  const result = await d.findGlob(path.join('*', 'bin'))('root folder');
 
-  expect(glob.create).toHaveBeenCalledWith('root folder/*/bin', { implicitDescendants: false });
-  expect(result).toStrictEqual(['root folder/subfolder/bin']);
+  expect(glob.create).toHaveBeenCalledWith(path.join('root folder', '*', 'bin'), { implicitDescendants: false });
+  expect(result).toStrictEqual([expected]);
 });
 
 test('globbing root folder', async () => {
