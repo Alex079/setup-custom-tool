@@ -3,7 +3,7 @@
 <a href="https://github.com/Alex079/setup-custom-tool/actions?query=workflow%3ACI"><img src="https://github.com/Alex079/setup-custom-tool/workflows/CI/badge.svg" /></a>
 
 This action can download, unpack, and add to PATH a tool of your choice.
-The supported archive types are `.tgz`, `.tar.gz`, `.tar.bz2`, `.zip`, `.7z`.
+The supported archive types are `.tgz`, `.tar.gz`, `.tar.bz2`, `.zip`, `.7z`, `.xar`.
 The unpacked tool can be cached and reused.
 Glob expression is used to find folders to add to PATH.
 See [Toolkit](https://github.com/actions/toolkit) for more details about github toolkit.
