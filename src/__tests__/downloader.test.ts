@@ -87,7 +87,7 @@ test('downloading tar.bz2 with cache miss', async () => {
   expect(tool.find).toHaveBeenCalledWith('tool', '1.1', '');
   expect(tool.downloadTool).toHaveBeenCalledWith('URL.tar.bz2');
   expect(tool.extractZip).not.toHaveBeenCalled();
-  expect(tool.extractTar).toHaveBeenCalledWith('tmp file', undefined, 'xj');
+  expect(tool.extractTar).toHaveBeenCalledWith('tmp file', undefined, 'x');
   expect(tool.extract7z).not.toHaveBeenCalled();
   expect(tool.extractXar).not.toHaveBeenCalled();
   expect(tool.cacheDir).toHaveBeenCalledWith('tmp folder', 'tool', '1.1', '');
@@ -103,7 +103,7 @@ test('downloading tar.bz2 without caching', async () => {
   expect(tool.find).not.toHaveBeenCalled();
   expect(tool.downloadTool).toHaveBeenCalledWith('URL.tar.bz2');
   expect(tool.extractZip).not.toHaveBeenCalled();
-  expect(tool.extractTar).toHaveBeenCalledWith('tmp file', undefined, 'xj');
+  expect(tool.extractTar).toHaveBeenCalledWith('tmp file', undefined, 'x');
   expect(tool.extract7z).not.toHaveBeenCalled();
   expect(tool.extractXar).not.toHaveBeenCalled();
   expect(tool.cacheDir).not.toHaveBeenCalled();
@@ -136,7 +136,7 @@ test('downloading tar.gz with cache miss', async () => {
   expect(tool.find).toHaveBeenCalledWith('tool', '1.1', '');
   expect(tool.downloadTool).toHaveBeenCalledWith('URL.tar.gz');
   expect(tool.extractZip).not.toHaveBeenCalled();
-  expect(tool.extractTar).toHaveBeenCalledWith('tmp file');
+  expect(tool.extractTar).toHaveBeenCalledWith('tmp file', undefined, "x");
   expect(tool.extract7z).not.toHaveBeenCalled();
   expect(tool.extractXar).not.toHaveBeenCalled();
   expect(tool.cacheDir).toHaveBeenCalledWith('tmp folder', 'tool', '1.1', '');
@@ -152,7 +152,7 @@ test('downloading tar.gz without caching', async () => {
   expect(tool.find).not.toHaveBeenCalled();
   expect(tool.downloadTool).toHaveBeenCalledWith('URL.tar.gz');
   expect(tool.extractZip).not.toHaveBeenCalled();
-  expect(tool.extractTar).toHaveBeenCalledWith('tmp file');
+  expect(tool.extractTar).toHaveBeenCalledWith('tmp file', undefined, "x");
   expect(tool.extract7z).not.toHaveBeenCalled();
   expect(tool.extractXar).not.toHaveBeenCalled();
   expect(tool.cacheDir).not.toHaveBeenCalled();

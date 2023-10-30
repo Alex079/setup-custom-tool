@@ -46,14 +46,6 @@ function setCache(cache) {
 }
 const extractors = [
     {
-        test: url => url.endsWith('.tar.bz2'),
-        action: file => tool.extractTar(file, undefined, 'xj')
-    },
-    {
-        test: url => url.endsWith('.tar.gz') || url.endsWith('.tgz'),
-        action: tool.extractTar
-    },
-    {
         test: url => url.endsWith('.zip'),
         action: tool.extractZip
     },
@@ -64,6 +56,10 @@ const extractors = [
     {
         test: url => url.endsWith('.xar'),
         action: tool.extractXar
+    },
+    {
+        test: url => /\.t(ar\.[^.]+|b2|bz|bz2|z2|az|gz|lz|xz|Z|aZ|zst)$/.test(url),
+        action: file => tool.extractTar(file, undefined, 'x')
     }
 ];
 function extract(url) {

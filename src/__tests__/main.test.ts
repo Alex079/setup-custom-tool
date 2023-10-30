@@ -2,7 +2,7 @@
 import * as process from 'process';
 import * as path from 'path';
 import { rmSync } from 'fs';
-import { execSync, ExecSyncOptions } from 'child_process';
+import { execSync, ExecSyncOptions, SpawnSyncReturns } from 'child_process';
 
 const cmd = path.join(__dirname, '..', '..', 'dist', 'index.js');
 const target = path.join(__dirname, '..', '..', 'target');
@@ -12,6 +12,17 @@ const testEnv = {...process.env,
 };
 
 afterAll(() => { rmSync(target, { recursive: true }); });
+
+function runner(name: string, options: ExecSyncOptions) {
+  console.log(name);
+  try {
+    console.log(execSync(`node ${cmd}`, options).toString());
+  }
+  catch (e) {
+    console.error((e as SpawnSyncReturns<Buffer | string>).stdout.toString());
+    throw e;
+  }
+}
 
 test('test all parameters', () => {
   const options: ExecSyncOptions = {
@@ -23,36 +34,12 @@ test('test all parameters', () => {
       INPUT_TOOLARCH: 'none'
     }
   };
-  console.log('First run - download');
-  try {
-    console.log(execSync(`node ${cmd}`, options).toString());
-  }
-  catch (e) {
-    console.error(e);
-    throw e;
-  }
-  console.log('Second run - get from cache');
-  try {
-    console.log(execSync(`node ${cmd}`, options).toString());
-  }
-  catch (e) {
-    console.error(e);
-    throw e;
-  }
+  runner('First run - download', options);
+  runner('Second run - get from cache', options);
 });
 
 test('test required parameters', () => {
-  const options: ExecSyncOptions = {
-    env: {...testEnv,
-      INPUT_ARCHIVEURL: 'https://github.com/Alex079/setup-custom-tool/wiki/sample/content.zip'
-    }
-  };
-  console.log('First run - download');
-  try {
-    console.log(execSync(`node ${cmd}`, options).toString());
-  }
-  catch (e) {
-    console.error(e);
-    throw e;
-  }
+  runner('Download zip', { env: {...testEnv, INPUT_ARCHIVEURL: 'https://github.com/Alex079/setup-custom-tool/wiki/sample/content.zip'} });
+  runner('Download tar.bz', { env: {...testEnv, INPUT_ARCHIVEURL: 'https://github.com/Alex079/setup-custom-tool/wiki/sample/content.tar.bz'} });
+  runner('Download tar.bz2', { env: {...testEnv, INPUT_ARCHIVEURL: 'https://github.com/Alex079/setup-custom-tool/wiki/sample/content.tar.bz2'} });
 });
