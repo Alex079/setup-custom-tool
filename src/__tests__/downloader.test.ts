@@ -258,13 +258,12 @@ test('downloading xar without caching', async () => {
 });
 
 test('failed extracting', async () => {
-  mockedTool.downloadTool.mockImplementation(async () => 'tmp file');
   
   const result = await d.materialize('URL.archive', { name: 'tool', arch: 'arch' })
     .catch((error: Error) => expect(error?.message).toBe('Can not extract from URL.archive'));
 
   expect(tool.find).not.toHaveBeenCalled();
-  expect(tool.downloadTool).toHaveBeenCalledWith('URL.archive');
+  expect(tool.downloadTool).not.toHaveBeenCalled();
   expect(tool.extractZip).not.toHaveBeenCalled();
   expect(tool.extractTar).not.toHaveBeenCalled();
   expect(tool.extract7z).not.toHaveBeenCalled();

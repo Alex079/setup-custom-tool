@@ -35,7 +35,7 @@ const tool = __importStar(__nccwpck_require__(7784));
 const glob = __importStar(__nccwpck_require__(8090));
 const path = __importStar(__nccwpck_require__(1017));
 async function materialize(url, cache) {
-    return getCache(cache) || tool.downloadTool(url).then(extract(url)).then(setCache(cache));
+    return getCache(cache) || extract(url).then(setCache(cache));
 }
 exports.materialize = materialize;
 function getCache(cache) {
@@ -46,15 +46,15 @@ function setCache(cache) {
 }
 const extractors = [
     {
-        test: url => url.endsWith('.zip'),
+        test: url => /\.zip$/.test(url),
         action: tool.extractZip
     },
     {
-        test: url => url.endsWith('.7z'),
+        test: url => /\.7z$/.test(url),
         action: tool.extract7z
     },
     {
-        test: url => url.endsWith('.xar'),
+        test: url => /\.xar$/.test(url),
         action: tool.extractXar
     },
     {
@@ -62,12 +62,12 @@ const extractors = [
         action: file => tool.extractTar(file, undefined, 'x')
     }
 ];
-function extract(url) {
+async function extract(url) {
     const extractor = extractors.find(e => e.test(url));
     if (!extractor) {
         throw Error(`Can not extract from ${url}`);
     }
-    return extractor.action;
+    return tool.downloadTool(url).then(extractor.action);
 }
 function findGlob(expression = '') {
     return async (folder) => glob.create(path.join(folder, expression), { implicitDescendants: false }).then(async (globber) => globber.glob());

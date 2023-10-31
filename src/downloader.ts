@@ -9,7 +9,7 @@ export interface CacheOptions {
 }
 
 export async function materialize(url: string, cache: CacheOptions): Promise<string> {
-  return getCache(cache) || tool.downloadTool(url).then(extract(url)).then(setCache(cache));
+  return getCache(cache) || extract(url).then(setCache(cache));
 }
 
 function getCache(cache: CacheOptions): string {
@@ -27,15 +27,15 @@ interface Extractor {
 
 const extractors: Extractor[] = [
   {
-    test: url => url.endsWith('.zip'),
+    test: url => /\.zip$/.test(url),
     action: tool.extractZip
   },
   {
-    test: url => url.endsWith('.7z'),
+    test: url => /\.7z$/.test(url),
     action: tool.extract7z
   },
   {
-    test: url => url.endsWith('.xar'),
+    test: url => /\.xar$/.test(url),
     action: tool.extractXar
   },
   {
@@ -44,12 +44,12 @@ const extractors: Extractor[] = [
   }
 ];
 
-function extract(url: string): (file: string) => Promise<string> {
+async function extract(url: string): Promise<string> {
   const extractor = extractors.find(e => e.test(url));
   if (!extractor) {
     throw Error(`Can not extract from ${url}`);
   }
-  return extractor.action;
+  return tool.downloadTool(url).then(extractor.action);
 }
 
 export function findGlob(expression: string = ''): (folder: string) => Promise<string[]> {
