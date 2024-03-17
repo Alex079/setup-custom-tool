@@ -10,7 +10,7 @@
     "build": "tsc",
     "dist": "ncc build",
     "test": "jest",
-    "all": "yarn run lint && yarn run clean && yarn run build && yarn run dist && yarn run test"
+    "all": "yarn lint && yarn clean && yarn build && yarn dist && yarn test"
   },
   "repository": {
     "type": "git",
@@ -28,9 +28,9 @@
     "@actions/glob": "^0",
     "@actions/tool-cache": "^2",
     "@types/jest": "^29",
-    "@types/node": "^18",
-    "@typescript-eslint/eslint-plugin": "^6",
-    "@typescript-eslint/parser": "^6",
+    "@types/node": "^20",
+    "@typescript-eslint/eslint-plugin": "^7",
+    "@typescript-eslint/parser": "^7",
     "@vercel/ncc": "^0",
     "eslint": "^8",
     "eslint-plugin-jest": "^27",
