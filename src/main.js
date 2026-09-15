@@ -17,10 +17,9 @@ export async function run() {
     }
     await materialize(url, cache)
       .then(findGlob(expression))
-      .then((found) => found.forEach(core.addPath))
+      .then((found) => found.forEach((path) => core.addPath(path)))
       .catch(core.setFailed)
   } catch (error) {
-    // Fail the workflow run if an error occurs
-    if (error instanceof Error) core.setFailed(error.message)
+    core.setFailed(error)
   }
 }

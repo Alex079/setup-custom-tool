@@ -1,74 +1,112 @@
-import * as process from 'node:process'
-import * as path from 'node:path'
-import { rmSync } from 'node:fs'
-import { execSync } from 'node:child_process'
+/**
+ * Unit tests for src/main.js
+ *
+ * The core module is mocked via a fixture so the real '@actions/core' module is
+ * not imported. The downloader module is mocked with mock objects, like in the
+ * downloader tests, so no real downloads happen during these tests.
+ */
+import { jest } from '@jest/globals'
 
-const { fileURLToPath } = await import('node:url')
-
-const cmd = path.join(
-  fileURLToPath(new URL('..', import.meta.url)),
-  'dist',
-  'index.js'
-)
-const target = path.join(
-  fileURLToPath(new URL('..', import.meta.url)),
-  'target'
-)
-const testEnv = {
-  ...process.env,
-  RUNNER_TEMP: target,
-  RUNNER_TOOL_CACHE: target
+const core = {
+  getInput: jest.fn(),
+  addPath: jest.fn(),
+  setFailed: jest.fn(),
+  debug: jest.fn()
 }
 
-afterAll(() => {
-  rmSync(target, { recursive: true })
+const downloader = {
+  materialize: jest.fn(),
+  findGlob: jest.fn()
+}
+
+jest.unstable_mockModule('@actions/core', () => core)
+jest.unstable_mockModule('../src/downloader.js', () => downloader)
+
+let r
+
+beforeEach(() => {
+  jest.resetAllMocks()
 })
 
-function runner(name, options) {
-  console.log(name)
-  console.log(
-    execSync(`node ${cmd}`, { env: options.env, ...options }).toString()
+beforeAll(async () => {
+  r = await import('../src/main.js')
+})
+
+const inputValues = {
+  archiveUrl: 'https://example.com/tool.tar.gz',
+  archiveGlob: '*/bin',
+  toolName: 'tool',
+  toolVersion: '1.1',
+  toolArch: 'none'
+}
+
+function mockInputs(values) {
+  core.getInput.mockImplementation((name, options) => {
+    if (options && options.required && !values[name]) {
+      throw new Error(`Input required and not supplied: ${name}`)
+    }
+    return values[name]
+  })
+}
+
+test('run materializes, globs, and adds found paths to PATH', async () => {
+  mockInputs(inputValues)
+  downloader.materialize.mockImplementation(async () => 'extracted folder')
+  downloader.findGlob.mockImplementation((expression) => async (folder) => {
+    expect(expression).toBe('*/bin')
+    expect(folder).toBe('extracted folder')
+    return ['extracted folder/bin']
+  })
+
+  await r.run()
+
+  expect(downloader.materialize).toHaveBeenCalledWith(
+    'https://example.com/tool.tar.gz',
+    {
+      name: 'tool',
+      version: '1.1',
+      arch: 'none'
+    }
   )
-}
-
-test('runs with all parameters', () => {
-  const options = {
-    env: {
-      ...testEnv,
-      INPUT_ARCHIVEURL:
-        'https://github.com/Alex079/setup-custom-tool/wiki/sample/content.tar.gz',
-      INPUT_ARCHIVEGLOB: '*',
-      INPUT_TOOLNAME: 'example',
-      INPUT_TOOLVERSION: '2017.2.2',
-      INPUT_TOOLARCH: 'none'
-    }
-  }
-  runner('First run - download', options)
-  runner('Second run - get from cache', options)
-  expect(cmd).toMatch(/index\.js$/)
+  expect(downloader.findGlob).toHaveBeenCalledWith('*/bin')
+  expect(core.addPath).toHaveBeenCalledWith('extracted folder/bin')
+  expect(core.setFailed).not.toHaveBeenCalled()
 })
 
-test('runs with required parameters', () => {
-  runner('Download zip', {
-    env: {
-      ...testEnv,
-      INPUT_ARCHIVEURL:
-        'https://github.com/Alex079/setup-custom-tool/wiki/sample/content.zip'
-    }
+test('run reports failure when the required input is missing', async () => {
+  mockInputs({ ...inputValues, archiveUrl: '' })
+
+  await r.run()
+
+  expect(downloader.materialize).not.toHaveBeenCalled()
+  expect(core.setFailed).toHaveBeenCalledWith(
+    new Error('Input required and not supplied: archiveUrl')
+  )
+})
+
+test('run reports failure when materializing rejects', async () => {
+  mockInputs({
+    ...inputValues,
+    archiveGlob: '',
+    toolName: '',
+    toolVersion: '',
+    toolArch: ''
   })
-  runner('Download tar.bz', {
-    env: {
-      ...testEnv,
-      INPUT_ARCHIVEURL:
-        'https://github.com/Alex079/setup-custom-tool/wiki/sample/content.tar.bz'
-    }
+  downloader.materialize.mockImplementation(async () => {
+    throw new Error('boom')
   })
-  runner('Download tar.bz2', {
-    env: {
-      ...testEnv,
-      INPUT_ARCHIVEURL:
-        'https://github.com/Alex079/setup-custom-tool/wiki/sample/content.tar.bz2'
-    }
+
+  await r.run()
+
+  expect(core.setFailed).toHaveBeenCalledWith(new Error('boom'))
+})
+
+test('run reports failure on an unexpected error', async () => {
+  core.getInput.mockImplementation(() => {
+    throw new TypeError('bad input')
   })
-  expect(cmd).toMatch(/index\.js$/)
+
+  await r.run()
+
+  expect(core.setFailed).toHaveBeenCalledWith(new TypeError('bad input'))
 })

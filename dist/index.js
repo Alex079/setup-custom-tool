@@ -40101,11 +40101,10 @@ async function run() {
     };
     await materialize(url, cache)
       .then(findGlob(expression))
-      .then((found) => found.forEach(addPath))
+      .then((found) => found.forEach((path) => addPath(path)))
       .catch(setFailed);
   } catch (error) {
-    // Fail the workflow run if an error occurs
-    if (error instanceof Error) setFailed(error.message);
+    setFailed(error);
   }
 }
 

@@ -1,9 +1,13 @@
+/**
+ * Unit tests for src/downloader.js
+ *
+ * The tool-cache and glob modules are mocked via fixtures so the real modules
+ * are not imported. The module under test is dynamically imported after the
+ * mocks are registered.
+ */
 import { jest } from '@jest/globals'
 import * as path from 'node:path'
 
-// Build mock objects and register them as mocks for the modules the module
-// under test imports. The mock objects must be declared before the module is
-// dynamically imported so the mocks are used in place of the real modules.
 const tool = {
   find: jest.fn(),
   downloadTool: jest.fn(),
@@ -13,6 +17,7 @@ const tool = {
   extractXar: jest.fn(),
   cacheDir: jest.fn()
 }
+
 const glob = {
   create: jest.fn()
 }
@@ -20,14 +25,14 @@ const glob = {
 jest.unstable_mockModule('@actions/tool-cache', () => tool)
 jest.unstable_mockModule('@actions/glob', () => glob)
 
-beforeEach(() => {
-  jest.resetAllMocks()
-})
-
 let d
 
 beforeAll(async () => {
   d = await import('../src/downloader.js')
+})
+
+beforeEach(() => {
+  jest.resetAllMocks()
 })
 
 test('downloading zip with cache hit', async () => {
