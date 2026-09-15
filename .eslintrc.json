@@ -1,12 +1,7 @@
 {
   "root": true,
-  "plugins": [
-    "jest",
-    "@typescript-eslint"
-  ],
-  "extends": [
-    "plugin:@typescript-eslint/recommended"
-  ],
+  "plugins": ["jest", "@typescript-eslint"],
+  "extends": ["plugin:@typescript-eslint/recommended"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": 2022,

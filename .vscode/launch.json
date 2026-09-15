@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run Action",
+      "program": "${workspaceFolder}/src/index.js",
+      "preLaunchTask": "npm: build",
+      "env": {
+        "INPUT_MILLISECONDS": "500",
+        "GITHUB_OUTPUT": "${workspaceFolder}/github-output"
+      },
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"]
+    }
+  ]
+}
