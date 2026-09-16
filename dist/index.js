@@ -40113,6 +40113,5 @@ async function run() {
  * main logic.
  */
 
-/* istanbul ignore next */
 run();
 //# sourceMappingURL=index.js.map

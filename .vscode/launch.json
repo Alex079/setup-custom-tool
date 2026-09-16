@@ -7,8 +7,7 @@
       "name": "Run action (e2e)",
       "program": "${workspaceFolder}/src/index.js",
       "env": {
-        "INPUT_ARCHIVEURL":
-          "https://github.com/Alex079/setup-custom-tool/wiki/sample/content.tar.gz",
+        "INPUT_ARCHIVEURL": "https://github.com/Alex079/setup-custom-tool/wiki/sample/content.tar.gz",
         "INPUT_ARCHIVEGLOB": "*",
         "INPUT_TOOLNAME": "example",
         "INPUT_TOOLVERSION": "2017.2.2",
