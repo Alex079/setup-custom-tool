@@ -1,6 +1,7 @@
 # Setup custom tool
 
-<a href="https://github.com/Alex079/setup-custom-tool/actions?query=workflow%3ACI"><img src="https://github.com/Alex079/setup-custom-tool/workflows/CI/badge.svg" /></a>
+<img src="workflows/CI/badge.svg" />
+<img src="badges/coverage.svg" alt="Coverage badge" />
 
 This action can download, unpack, and add to PATH a tool of your choice. The
 supported archive types are `.tar`, `.zip`, `.7z`, `.xar`. The unpacked tool can
