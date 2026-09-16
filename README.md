@@ -34,9 +34,9 @@ jobs:
           - macos-latest
     steps:
       - name: Checkout current repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Deploy 'customTool'
-        uses: Alex079/setup-custom-tool@v2
+        uses: Alex079/setup-custom-tool@update-template
         with:
           archiveUrl: <direct download URL of 'customTool' archive>
           archiveGlob: '*/bin'

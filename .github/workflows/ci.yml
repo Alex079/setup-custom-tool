@@ -16,7 +16,7 @@ jobs:
           - macos-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Run
         run: |
           npm ci
@@ -36,7 +36,7 @@ jobs:
           - .tar.bz2
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Deploy ${{matrix.ext}}
         uses: ./
         with:
