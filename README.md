@@ -1,6 +1,6 @@
 # Setup custom tool
 
-<img src="workflows/CI/badge.svg" />
+<img src="https://github.com/Alex079/setup-custom-tool/actions/workflows/ci.yml/badge.svg" />
 <img src="badges/coverage.svg" alt="Coverage badge" />
 
 This action can download, unpack, and add to PATH a tool of your choice. The
