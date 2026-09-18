@@ -37,7 +37,7 @@ jobs:
       - name: Checkout current repository
         uses: actions/checkout@v6
       - name: Deploy 'customTool'
-        uses: Alex079/setup-custom-tool@update-template
+        uses: Alex079/setup-custom-tool@v3
         with:
           archiveUrl: <direct download URL of 'customTool' archive>
           archiveGlob: '*/bin'
