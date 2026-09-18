@@ -1,12 +1,13 @@
 # Setup custom tool
 
-<a href="https://github.com/Alex079/setup-custom-tool/actions?query=workflow%3ACI"><img src="https://github.com/Alex079/setup-custom-tool/workflows/CI/badge.svg" /></a>
+<img src="https://github.com/Alex079/setup-custom-tool/actions/workflows/ci.yml/badge.svg" />
+<img src="badges/coverage.svg" alt="Coverage badge" />
 
-This action can download, unpack, and add to PATH a tool of your choice.
-The supported archive types are `.tar`, `.zip`, `.7z`, `.xar`.
-The unpacked tool can be cached and reused.
-Glob expression is used to find folders to add to PATH.
-See [Toolkit](https://github.com/actions/toolkit) for more details about github toolkit.
+This action can download, unpack, and add to PATH a tool of your choice. The
+supported archive types are `.tar`, `.zip`, `.7z`, `.xar`. The unpacked tool can
+be cached and reused. Glob expression is used to find folders to add to PATH.
+See [Toolkit](https://github.com/actions/toolkit) for more details about github
+toolkit.
 
 ## Usage
 
@@ -34,9 +35,9 @@ jobs:
           - macos-latest
     steps:
       - name: Checkout current repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Deploy 'customTool'
-        uses: Alex079/setup-custom-tool@v2
+        uses: Alex079/setup-custom-tool@update-template
         with:
           archiveUrl: <direct download URL of 'customTool' archive>
           archiveGlob: '*/bin'

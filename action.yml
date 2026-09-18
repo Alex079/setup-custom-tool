@@ -9,7 +9,9 @@ inputs:
     description: 'URL to download from'
     required: true
   archiveGlob:
-    description: 'Glob expression to find directory inside archive to add to path after unpacking'
+    description:
+      'Glob expression to find directory inside archive to add to path after
+      unpacking'
     required: false
   toolName:
     description: 'Name of the tool in cache'
@@ -21,5 +23,5 @@ inputs:
     description: 'Target platform architecture of the tool in cache'
     required: false
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/index.js'

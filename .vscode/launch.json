@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run action (e2e)",
+      "program": "${workspaceFolder}/src/index.js",
+      "env": {
+        "INPUT_ARCHIVEURL": "https://github.com/Alex079/setup-custom-tool/wiki/sample/content.tar.gz",
+        "INPUT_ARCHIVEGLOB": "*",
+        "INPUT_TOOLNAME": "example",
+        "INPUT_TOOLVERSION": "2017.2.2",
+        "INPUT_TOOLARCH": "none",
+        "RUNNER_TEMP": "${workspaceFolder}/target",
+        "RUNNER_TOOL_CACHE": "${workspaceFolder}/target"
+      },
+      "console": "integratedTerminal"
+    }
+  ]
+}

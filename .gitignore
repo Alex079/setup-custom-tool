@@ -35,20 +35,14 @@ coverage
 # Bower dependency directory (https://bower.io/)
 bower_components
 
-# node-waf configuration
-.lock-wscript
-
-# Compiled binary addons (https://nodejs.org/api/addons.html)
+# Compiled binary addons
 build/Release
 
 # Dependency directories
 jspm_packages/
 
-# TypeScript v1 declaration files
-typings/
-
-# TypeScript cache
-*.tsbuildinfo
+# Yarn Integrity file
+.yarn-integrity
 
 # Optional npm cache directory
 .npm
@@ -95,5 +89,15 @@ typings/
 Thumbs.db
 
 # Ignore built ts files
-lib
 target
+
+# Node / npm
+npm-debug.log*
+.nyc_output
+
+# Coverage
+coverage
+*.lcov
+
+# Prettier cache
+.prettiercache

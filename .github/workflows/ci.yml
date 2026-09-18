@@ -1,8 +1,10 @@
 name: CI
 
 on:
-  - pull_request
-  - push
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   build:
@@ -16,11 +18,11 @@ jobs:
           - macos-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Run
         run: |
-          yarn install
-          yarn run all
+          npm ci
+          npm run all
   run:
     name: Deploy ${{matrix.ext}} on ${{matrix.os}}
     runs-on: ${{matrix.os}}
@@ -36,9 +38,9 @@ jobs:
           - .tar.bz2
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Deploy ${{matrix.ext}}
         uses: ./
-        with: 
+        with:
           archiveUrl: https://github.com/Alex079/setup-custom-tool/wiki/sample/content${{matrix.ext}}
           archiveGlob: '*'
