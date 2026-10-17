@@ -11,7 +11,13 @@ const config = {
     format: 'es',
     sourcemap: true
   },
-  plugins: [commonjs(), nodeResolve({ preferBuiltins: true })]
+  plugins: [
+    // Transform guarded `require()` calls (e.g. minimatch's `try { require('path') } catch {}`).
+    // By default the commonjs plugin leaves these untouched, which leaves `require` undefined
+    // in the ESM bundle and silently swallows the resulting ReferenceError.
+    commonjs({ ignoreTryCatch: false }),
+    nodeResolve({ preferBuiltins: true })
+  ]
 }
 
 export default config
