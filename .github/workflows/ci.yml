@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
@@ -44,3 +44,11 @@ jobs:
         with:
           archiveUrl: https://github.com/Alex079/setup-custom-tool/wiki/sample/content${{matrix.ext}}
           archiveGlob: '*'
+      - name: Verify the extracted directory was added to PATH
+        shell: bash
+        run: |
+          if ! printf '%s' "$PATH" | tr ':' '\n' | grep -qE '/content$'; then
+            echo "The extracted 'content' directory was not found on PATH."
+            printf '%s\n' "$PATH" | tr ':' '\n'
+            exit 1
+          fi
