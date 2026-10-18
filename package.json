@@ -1,7 +1,7 @@
 {
   "name": "setup-custom-tool",
   "description": "Download, unpack, and add to PATH a tool of your choice",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "type": "module",
   "main": "dist/index.js",
   "author": "Alex079",
